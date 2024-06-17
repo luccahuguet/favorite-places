@@ -4,7 +4,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -14,6 +14,8 @@ import { StatusBar } from "expo-status-bar";
 import AddPlace from "../screens/AddPlace";
 import AllPlaces from "../screens/AllPlaces";
 import * as SplashScreen from "expo-splash-screen";
+import IconButton from "../components/UI/IconButton";
+import { Colors } from "@/constants/Colors";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -40,9 +42,30 @@ export default function RootLayout() {
     <>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <NavigationContainer independent={true}>
-          <Stack.Navigator>
-            <Stack.Screen name="AllPlaces" component={AllPlaces} />
-            <Stack.Screen name="AddPlace" component={AddPlace} />
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: Colors.light.primary500,
+              },
+              headerTintColor: Colors.light.gray700,
+              contentStyle: { backgroundColor: Colors.light.gray700 },
+            }}
+          >
+            <Stack.Screen
+              name="Your Favorite Places"
+              component={AllPlaces}
+              options={({ navigation }) => ({
+                headerRight: ({ tintColor }) => (
+                  <IconButton
+                    icon="add-outline"
+                    size={24}
+                    color={tintColor}
+                    onPress={() => navigation.navigate("AddPlace")}
+                  />
+                ),
+              })}
+            />
+            <Stack.Screen name="Add a Place" component={AddPlace} />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>

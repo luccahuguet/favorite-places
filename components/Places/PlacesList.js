@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { Text } from "react-native";
 import React from "react";
 import { StyleSheet } from "react-native";
+import { Colors } from "@/constants/Colors";
 function PlacesList({ places }) {
   if (places.length === 0) {
     return (
@@ -33,5 +34,6 @@ const styles = StyleSheet.create({
   },
   fallbackText: {
     fontSize: 18,
+    color: Colors.light.primary200,
   },
 });
