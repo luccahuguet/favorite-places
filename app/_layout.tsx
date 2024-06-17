@@ -52,9 +52,10 @@ export default function RootLayout() {
             }}
           >
             <Stack.Screen
-              name="Your Favorite Places"
+              name="AllPlaces"
               component={AllPlaces}
               options={({ navigation }) => ({
+                title: "Your Favorite Places",
                 headerRight: ({ tintColor }) => (
                   <IconButton
                     icon="add-outline"
@@ -65,7 +66,13 @@ export default function RootLayout() {
                 ),
               })}
             />
-            <Stack.Screen name="Add a Place" component={AddPlace} />
+            <Stack.Screen
+              name="AddPlace"
+              component={AddPlace}
+              options={({}) => ({
+                title: "Add a New Place",
+              })}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
