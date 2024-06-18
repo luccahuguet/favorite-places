@@ -7,8 +7,17 @@ import {
   PermissionStatus,
 } from "expo-location";
 
+import { useState } from "react";
+import { Image } from "react-native";
+import { Text } from "react-native";
+import getMapPreview from "@/util/location";
+import { useNavigation } from "expo-router";
+
 function LocationPicker() {
+  const [pickedLocation, setPickedLocation] = useState();
   const [permission, askForPermission] = useForegroundPermissions();
+
+  const navigation = useNavigation();
 
   async function verifyPermissions() {
     console.log("Verifying permissions...");
@@ -34,14 +43,32 @@ function LocationPicker() {
     const location = await getCurrentPositionAsync({
       timeout: 5000,
     });
-    console.log("Location:", location);
+
+    setPickedLocation({
+      lat: location.coords.latitude,
+      lng: location.coords.longitude,
+    });
   }
 
-  function pickOnMapHandler() {}
+  function pickOnMapHandler() {
+    navigation.navigate("Map");
+  }
+
+  let imagePreview = <Text>No image picked yet.</Text>;
+  if (pickedLocation) {
+    imagePreview = (
+      <Image
+        style={styles.image}
+        source={{
+          uri: getMapPreview(pickedLocation.lat, pickedLocation.lng),
+        }}
+      />
+    );
+  }
 
   return (
     <View>
-      <View style={styles.mapPreview}></View>
+      <View style={styles.mapPreview}>{imagePreview}</View>
       <View style={styles.actions}>
         <Button title="Get User Location" onPress={getLocationHandler} />
         <Button title="Pick on Map" onPress={pickOnMapHandler} />
@@ -65,5 +92,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     width: "100%",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
   },
 });

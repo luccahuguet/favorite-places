@@ -16,6 +16,7 @@ import AllPlaces from "../screens/AllPlaces";
 import * as SplashScreen from "expo-splash-screen";
 import IconButton from "../components/UI/IconButton";
 import { Colors } from "@/constants/Colors";
+import Map from "../screens/Map";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -71,6 +72,13 @@ export default function RootLayout() {
               component={AddPlace}
               options={({}) => ({
                 title: "Add a New Place",
+              })}
+            />
+            <Stack.Screen
+              name="Map"
+              component={Map}
+              options={({}) => ({
+                title: "Map",
               })}
             />
           </Stack.Navigator>
