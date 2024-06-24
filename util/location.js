@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyCESj6wtW3fPrK8Eo8UNFD3I4nRMuXML1s";
+const API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 function getMapPreview(latitude, longitude) {
   const maps_url = `https://maps.googleapis.com/maps/api/staticmap?`;
