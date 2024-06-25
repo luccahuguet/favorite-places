@@ -4,7 +4,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -17,23 +17,40 @@ import * as SplashScreen from "expo-splash-screen";
 import IconButton from "../components/UI/IconButton";
 import { Colors } from "@/constants/Colors";
 import CoolMap from "../screens/CoolMap";
+import { init } from "../util/database";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [appIsReady, setAppIsReady] = useState(false);
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await init();
+        await SplashScreen.preventAutoHideAsync();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+    prepare();
+  }, []);
+
+  const [fontsLoaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
   useEffect(() => {
-    if (loaded) {
+    if (appIsReady && fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [appIsReady, fontsLoaded]);
 
-  if (!loaded) {
+  if (!appIsReady || !fontsLoaded) {
     return null;
   }
 
