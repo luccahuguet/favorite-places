@@ -25,13 +25,12 @@ function PlaceForm({ onCreatePlace }) {
 
   function savePlaceHandler() {
     const placeData = new Place(enteredTitle, selectedImage, pickedLocation);
-
     onCreatePlace(placeData);
   }
 
   return (
     <ScrollView style={styles.form}>
-      <View>
+      <View style={styles.inputContainer}>
         <Text style={styles.label}>Title</Text>
         <TextInput
           value={enteredTitle}
@@ -39,9 +38,15 @@ function PlaceForm({ onCreatePlace }) {
           style={styles.input}
         />
       </View>
-      <ImagePicker onImageTaken={takeImageHandler} />
-      <LocationPicker onPickLocation={pickLocationHandler} />
-      <Button onPress={savePlaceHandler}>Save Place</Button>
+      <View style={styles.imagePickerContainer}>
+        <ImagePicker onImageTaken={takeImageHandler} />
+      </View>
+      <View style={styles.locationPickerContainer}>
+        <LocationPicker onPickLocation={pickLocationHandler} />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button onPress={savePlaceHandler}>Save Place</Button>
+      </View>
     </ScrollView>
   );
 }
@@ -51,20 +56,32 @@ export default PlaceForm;
 const styles = StyleSheet.create({
   form: {
     flex: 1,
-    padding: 20,
+    padding: 24,
+  },
+  inputContainer: {
+    marginBottom: 24,
   },
   label: {
     fontWeight: "bold",
-    marginBottom: 4,
+    marginBottom: 8,
     color: Colors.light.primary500,
+    fontSize: 16,
   },
   input: {
     borderBottomColor: Colors.light.primary700,
     backgroundColor: Colors.light.primary100,
     fontSize: 16,
     borderBottomWidth: 2,
-    marginVertical: 8,
     paddingVertical: 8,
     paddingHorizontal: 4,
+  },
+  imagePickerContainer: {
+    marginBottom: 24,
+  },
+  locationPickerContainer: {
+    marginBottom: 24,
+  },
+  buttonContainer: {
+    marginTop: 8,
   },
 });
