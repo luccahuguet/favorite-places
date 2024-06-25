@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
 
-function ImagePicker() {
+function ImagePicker({ onImageTaken }) {
   const [permission, askForPermission] = useCameraPermissions();
   const [uploadedImage, setUploadedImage] = useState(null);
 
@@ -46,6 +46,7 @@ function ImagePicker() {
       const uri = image.assets[0].uri;
       console.log("Image URI:", uri);
       setUploadedImage(uri);
+      onImageTaken(uri);
     } else {
       console.log("Image picking was cancelled or no assets found.");
     }

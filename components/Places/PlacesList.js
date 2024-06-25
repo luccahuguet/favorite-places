@@ -1,10 +1,11 @@
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList } from "react-native";
 import PlaceItem from "./PlaceItem";
 import { View } from "react-native";
 import { Text } from "react-native";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
+
 function PlacesList({ places }) {
   if (places.length === 0) {
     return (
