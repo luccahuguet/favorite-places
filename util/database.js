@@ -1,22 +1,74 @@
 import * as SQLite from "expo-sqlite";
 
+// Singleton instance of the database
+let db;
+
+// Flag to control insert logging
+const INSERT_LOG = false;
+
 // Initialize the database and create the table if it does not exist
 export async function init() {
+  if (!db) {
+    try {
+      db = await SQLite.openDatabaseAsync("places.db");
+      await db.execAsync(`
+        PRAGMA journal_mode = WAL;
+        CREATE TABLE IF NOT EXISTS places (
+          id INTEGER PRIMARY KEY NOT NULL,
+          title TEXT NOT NULL,
+          imageUri TEXT NOT NULL,
+          address TEXT NOT NULL,
+          lat REAL NOT NULL,
+          lng REAL NOT NULL
+        );
+      `);
+      console.log("[DB] Database initialized successfully");
+    } catch (error) {
+      console.error("[DB] Error initializing database:", error);
+    }
+  } else {
+    console.log("[DB] Database already initialized");
+  }
+}
+
+export async function insertPlace(place) {
   try {
-    const db = await SQLite.openDatabaseAsync("places.db");
-    await db.execAsync(`
-      PRAGMA journal_mode = WAL;
-      CREATE TABLE IF NOT EXISTS places (
-        id INTEGER PRIMARY KEY NOT NULL,
-        title TEXT NOT NULL,
-        imageUri TEXT NOT NULL,
-        address TEXT NOT NULL,
-        lat REAL NOT NULL,
-        lng REAL NOT NULL
-      );
-    `);
-    console.log("Database initialized successfully");
+    if (!db) {
+      await init();
+    }
+
+    if (INSERT_LOG) console.log("[INSERT] Inserting place with data:", place);
+
+    // Check if all required fields are present
+    if (
+      !place.title ||
+      !place.imageUri ||
+      !place.address ||
+      !place.location?.lat ||
+      !place.location?.lng
+    ) {
+      throw new Error("[INSERT] Missing required place fields");
+    }
+
+    // Log the values to be inserted
+    const values = [
+      place.title,
+      place.imageUri,
+      place.address,
+      place.location.lat,
+      place.location.lng,
+    ];
+    if (INSERT_LOG) console.log("[INSERT] Values to be inserted:", values);
+
+    const result = await db.runAsync(
+      "INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?);",
+      ...values,
+    );
+    if (INSERT_LOG) {
+      console.log("[INSERT] Place inserted successfully");
+      console.log("[INSERT] Result:", result);
+    }
   } catch (error) {
-    console.error("Error initializing database:", error);
+    console.error("[INSERT] Error inserting place:", error);
   }
 }
