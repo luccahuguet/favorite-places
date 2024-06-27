@@ -1,10 +1,12 @@
+import { Place } from "@/models/place";
 import * as SQLite from "expo-sqlite";
 
 // Singleton instance of the database
 let db;
 
-// Flag to control insert logging
+// Flags to control logging
 const INSERT_LOG = false;
+const FETCH_LOG = true;
 
 // Initialize the database and create the table if it does not exist
 export async function init() {
@@ -70,5 +72,32 @@ export async function insertPlace(place) {
     }
   } catch (error) {
     console.error("[INSERT] Error inserting place:", error);
+  }
+}
+
+export async function fetchPlaces() {
+  try {
+    const result = await db.getAllAsync("SELECT * FROM places");
+
+    if (FETCH_LOG) {
+      console.log("[FETCH] Results:", result);
+    }
+
+    const places = [];
+
+    for (const p of result) {
+      places.push(
+        new Place(p.title, p.imageUri, {
+          address: p.address,
+          lat: p.lat,
+          lng: p.lng,
+        }),
+      );
+    }
+
+    return places;
+  } catch (error) {
+    console.error("[FETCH] Error fetching places:", error);
+    return [];
   }
 }
