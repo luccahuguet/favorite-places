@@ -103,7 +103,7 @@ export default function RootLayout() {
               name="PlaceDetails"
               component={PlaceDetails}
               options={() => ({
-                title: "Place Details",
+                title: "Loading Place...",
               })}
             />
           </Stack.Navigator>

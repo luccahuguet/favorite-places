@@ -11,7 +11,7 @@ import {
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { fetchPlaceDetails } from "@/util/database";
 
-function PlaceDetails({ route }) {
+function PlaceDetails({ route, navigation }) {
   const [selectedPlace, setSelectedPlace] = useState(null);
 
   const selectedPlaceId = route.params?.placeId;
@@ -30,6 +30,7 @@ function PlaceDetails({ route }) {
         const place = await fetchPlaceDetails(selectedPlaceId);
         console.log("[PlaceDetails] Fetched place:", place);
         setSelectedPlace(place);
+        navigation.setOptions({ title: place.title });
       } else {
         console.error("[PlaceDetails] No selectedPlaceId received");
       }
@@ -54,7 +55,7 @@ function PlaceDetails({ route }) {
       <Image style={styles.image} source={{ uri: selectedPlace.imageUri }} />
       <View style={styles.locationContainer}>
         <View style={styles.addressContainer}>
-          <Text style={styles.address}>{selectedPlace.address}</Text>
+          <Text style={styles.address}>ADDRESS: {selectedPlace.address}</Text>
         </View>
         <Button title="View on Map" onPress={showOnMapHandler} />
       </View>
