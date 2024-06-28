@@ -14,6 +14,16 @@ import { fetchPlaceDetails } from "@/util/database";
 function PlaceDetails({ route, navigation }) {
   const [selectedPlace, setSelectedPlace] = useState(null);
 
+  function showOnMapHandler() {
+    console.log("[PlaceDetails] Navigating to Map with place:", selectedPlace);
+    navigation.navigate("Map", {
+      initialLocation: {
+        lat: selectedPlace.location.lat,
+        lng: selectedPlace.location.lng,
+      },
+    });
+  }
+
   const selectedPlaceId = route.params?.placeId;
   console.log(
     "[PlaceDetails] selectedPlaceId received from route:",
@@ -44,10 +54,6 @@ function PlaceDetails({ route, navigation }) {
         <Text>Loading place details...</Text>
       </View>
     );
-  }
-
-  function showOnMapHandler() {
-    // Implement map showing functionality
   }
 
   return (
