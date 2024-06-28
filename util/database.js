@@ -64,7 +64,7 @@ export async function insertPlace(place) {
 
     const result = await db.runAsync(
       "INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?);",
-      ...values,
+      ...values
     );
     if (INSERT_LOG) {
       console.log("[INSERT] Place inserted successfully");
@@ -77,27 +77,74 @@ export async function insertPlace(place) {
 
 export async function fetchPlaces() {
   try {
+    if (!db) {
+      await init();
+    }
+
     const result = await db.getAllAsync("SELECT * FROM places");
 
     if (FETCH_LOG) {
       console.log("[FETCH] Results:", result);
     }
 
-    const places = [];
+    const places = result.map(
+      (p) =>
+        new Place(
+          p.title,
+          p.imageUri,
+          {
+            address: p.address,
+            lat: p.lat,
+            lng: p.lng,
+          },
+          p.id
+        ) // Ensure id is included
+    );
 
-    for (const p of result) {
-      places.push(
-        new Place(p.title, p.imageUri, {
-          address: p.address,
-          lat: p.lat,
-          lng: p.lng,
-        }),
-      );
-    }
+    console.log("[FETCH] Places array:", places);
 
     return places;
   } catch (error) {
     console.error("[FETCH] Error fetching places:", error);
     return [];
+  }
+}
+
+export async function fetchPlaceDetails(id) {
+  try {
+    if (!db) {
+      await init();
+    }
+
+    console.log("[fetchPlaceDetails] Fetching place details for ID:", id);
+    const result = await db.getFirstAsync(
+      "SELECT * FROM places WHERE id = ?;",
+      [id]
+    );
+
+    if (FETCH_LOG) {
+      console.log("[FETCH] Result:", result);
+    }
+
+    if (!result) {
+      throw new Error(`[FETCH] No place found with id: ${id}`);
+    }
+
+    const place = new Place(
+      result.title,
+      result.imageUri,
+      {
+        address: result.address,
+        lat: result.lat,
+        lng: result.lng,
+      },
+      result.id
+    ); // Ensure id is included
+
+    console.log("[fetchPlaceDetails] Returning place:", place);
+    return place;
+  } catch (error) {
+    console.error("[FETCH] Error fetching place details:", error);
+    return null;
   }
 }

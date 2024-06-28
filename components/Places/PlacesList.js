@@ -1,26 +1,42 @@
-import { FlatList } from "react-native";
-import PlaceItem from "./PlaceItem";
-import { View } from "react-native";
-import { Text } from "react-native";
+import { FlatList, View, Text, StyleSheet } from "react-native";
 import React from "react";
-import { StyleSheet } from "react-native";
+import PlaceItem from "./PlaceItem";
 import { Colors } from "@/constants/Colors";
+import { useNavigation } from "expo-router";
 
 function PlacesList({ places }) {
+  const navigation = useNavigation();
+
+  function selectPlaceHandler(id) {
+    console.log("[PlacesList] Navigating to PlaceDetails with id:", id);
+    if (id) {
+      navigation.navigate("PlaceDetails", {
+        placeId: id,
+      });
+    } else {
+      console.error("[PlacesList] Invalid id received:", id);
+    }
+  }
+
+  console.log("[PlacesList] Places data:", places);
+
   if (places.length === 0) {
     return (
       <View style={styles.fallbackContainer}>
         <Text style={styles.fallbackText}>
-          No places found. Maybe start adding some!{" "}
+          No places found. Maybe start adding some!
         </Text>
       </View>
     );
   }
+
   return (
     <FlatList
       data={places}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <PlaceItem place={item} />}
+      keyExtractor={(item) => (item.id ? item.id.toString() : item.title)}
+      renderItem={({ item }) => (
+        <PlaceItem place={item} onSelect={selectPlaceHandler} />
+      )}
       style={styles.list}
     />
   );

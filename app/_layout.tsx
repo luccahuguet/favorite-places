@@ -18,6 +18,7 @@ import IconButton from "../components/UI/IconButton";
 import { Colors } from "@/constants/Colors";
 import CoolMap from "../screens/CoolMap";
 import { init } from "../util/database";
+import PlaceDetails from "../screens/PlaceDetails";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -96,6 +97,13 @@ export default function RootLayout() {
               component={CoolMap}
               options={() => ({
                 title: "Map",
+              })}
+            />
+            <Stack.Screen
+              name="PlaceDetails"
+              component={PlaceDetails}
+              options={() => ({
+                title: "Place Details",
               })}
             />
           </Stack.Navigator>
